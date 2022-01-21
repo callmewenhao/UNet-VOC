@@ -31,7 +31,7 @@
 
 另外，可以尝试使用 `Dice Loss`，公式如下：
 
-<img src="F:\GithubRepository\图像分割\SemanticSegmentation\figures\dice loss.png" style="zoom:70%;" />
+<img src="figures\dice loss.png" style="zoom:70%;" />
 
 为了使 S 取值范围是[0, 1]，分子中要乘 2 。
 
