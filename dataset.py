@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 import matplotlib.pyplot as plt
-from utils import keep_image_size, keep_segment_size
+from utils import resizeImage, resizeMask
 from torchvision.utils import save_image
 
 transform = transforms.Compose([
@@ -25,8 +25,8 @@ class MyDataset(Dataset):
         segment_name = self.names[index]
         segment_path = os.path.join(self.path, 'SegmentationClass', segment_name)
         image_path = os.path.join(self.path, 'JPEGImages', segment_name.replace('png', 'jpg'))
-        image = keep_image_size(image_path, size=self.image_shape)
-        segment = keep_segment_size(segment_path, size=self.image_shape)
+        image = resizeImage(image_path, size=self.image_shape)
+        segment = resizeMask(segment_path, size=self.image_shape)
         segment = np.array(segment)
         segment[segment > self.num_classes] = 0  # 边框处理
         return transform(image), torch.Tensor(segment)
@@ -36,7 +36,7 @@ class MyDataset(Dataset):
 
 
 def main():
-    train_data_path = "F:\GithubRepository\图像分割\VOCtrainval_06-Nov-2007\VOCdevkit\VOC2007"
+    train_data_path = "F:\GithubRepository\图像分割数据集\VOCtrainval_06-Nov-2007\VOCdevkit\VOC2007"
     mydataset = MyDataset(train_data_path, 21, (128, 128))
     _image = mydataset[0][0]
     _mask = mydataset[15][1]

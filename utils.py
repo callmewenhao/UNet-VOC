@@ -4,7 +4,20 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def keep_image_size(image_path, size=(256, 256)):
+def getPalette(img_path):
+    img = Image.open(img_path)
+    palette = img.getpalette()
+    return palette
+
+
+def tensorToPImage(mask_np, palette):
+    img = np.uint8(mask_np)
+    img = Image.fromarray(img)
+    img.putpalette(palette)
+    return img
+
+
+def resizeImage(image_path, size=(256, 256)):
     """
     处理输入
     输入图片地址
@@ -15,32 +28,42 @@ def keep_image_size(image_path, size=(256, 256)):
     mask = Image.new('RGB', (temp, temp), (0, 0, 0))
     mask.paste(img, (0, 0))
     mask = mask.resize(size)
-    # print(mask)
     return mask
 
-def keep_segment_size(image_path, size=(256, 256)):
+
+def resizeMask(image_path, size=(256, 256)):
     """
     处理标签
     输入图片地址
     输出缩放后的灰度图片
     """
     img = Image.open(image_path)
+    p = img.getpalette()
     temp = max(img.size)
     mask = Image.new('P', (temp, temp), 0)
+    mask.putpalette(p)
     mask.paste(img, (0, 0))
     mask = mask.resize(size)
     return mask
 
 
 def main():
-    test_image_path = "F:\GithubRepository\图像分割\VOCtrainval_06-Nov-2007\VOCdevkit\VOC2007\SegmentationClass\\000033.png"
-    segment = keep_segment_size(test_image_path, (128, 128))
-    print(segment.size)
-    data = np.array(segment)
-    data[data > 21] = 0
-    print(data.max(), data.min())
-    label = torch.Tensor(data)
-    print(label.shape)
+    test_image_path1 = "F:\GithubRepository\图像分割数据集\VOCtrainval_06-Nov-2007\VOCdevkit\VOC2007\SegmentationClass\\000033.png"
+    img1 = Image.open(test_image_path1)
+    palette1 = img1.getpalette()
+    img2 = np.array(img1)
+    img3 = Image.fromarray(img2)
+    img3.putpalette(palette1)
+    plt.figure()
+    plt.subplot(3, 1, 1)
+    plt.imshow(img1)
+    plt.subplot(3, 1, 2)
+    plt.imshow(img2)
+    plt.subplot(3, 1, 3)
+    plt.imshow(img3)
+    plt.show()
+
+
 
 if __name__ == "__main__":
     main()
