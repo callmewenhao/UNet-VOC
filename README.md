@@ -53,7 +53,7 @@
     <img src="images/img_seg_pred2.png" height="150" width="450" ><br>
     <img src="images/img_seg_pred3.png" height="150" width="450" ><br>
 </div>
-## thanks!
+### thanks!
 
 - https://zhuanlan.zhihu.com/p/111274912
 
