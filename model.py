@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision.transforms.functional as TF
 
+
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
@@ -17,9 +18,10 @@ class DoubleConv(nn.Module):
     def forward(self, x):
         return self.conv(x)
 
+
 class UNET(nn.Module):
     def __init__(
-            self, in_channels=3, out_channels=1, features=[64, 128, 256, 512],
+            self, in_channels=3, out_channels=21, features=[64, 128, 256, 512],
     ):
         super(UNET, self).__init__()
         self.ups = nn.ModuleList()
@@ -65,6 +67,7 @@ class UNET(nn.Module):
             x = self.ups[idx+1](concat_skip)
 
         return self.final_conv(x)
+
 
 def main():
     x = torch.randn((1, 3, 128, 128))
