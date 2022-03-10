@@ -9,10 +9,11 @@ from torchvision.utils import save_image
 
 
 # train one epoch
-def training(model, data_loader, criterion, optimizer, scheduler, device, epoch, epochs):
+def training(model, data_loader, criterion, optimizer, evaluator, scheduler, device, epoch, epochs):
     model.train()
     losses = []
     for i, (image, segment) in enumerate(data_loader):
+
         image, segment = image.to(device, dtype=torch.float32), segment.to(device, dtype=torch.long)
         # 前向计算
         out = model(image)
@@ -24,8 +25,17 @@ def training(model, data_loader, criterion, optimizer, scheduler, device, epoch,
         loss.backward()
         optimizer.step()
 
-        if i % 100 == 0:
-            print(f'epoch:{epoch}/{epochs}, iter:{i}th, train loss:{loss.item()}')
+        # 在训练过程中验证
+        evaluator.reset()
+        pred = out.data.cpu().numpy()  # output.cpu().numpy() ?
+        pred = np.argmax(pred, axis=1)
+        gt = segment.cpu().numpy()
+        evaluator.add_batch(gt, pred)
+        acc_batch = evaluator.Pixel_Accuracy()
+
+        if i % 50 == 0 and i > 0:
+            print(f'epoch:{epoch}/{epochs}, iter:{i}th, train loss:{loss.item()}, AccPerBatch:{acc_batch}')
+
     mean_loss = sum(losses) / len(losses)
     print(f"loss at epoch {epoch} is {mean_loss}")
     scheduler.step(mean_loss)
@@ -99,7 +109,7 @@ def main():
 
     # training
     for epoch in range(epochs):
-        training(model, data_loader, criterion, optimizer, scheduler, device, epoch, epochs)
+        training(model, data_loader, criterion, optimizer, evaluator, scheduler, device, epoch, epochs)
         if epoch % 10 == 0 and epoch > 0:  # validation
             validation(model, data_loader, evaluator, device, img_save_dir, epoch)
 
