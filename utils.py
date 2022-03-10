@@ -5,12 +5,19 @@ import matplotlib.pyplot as plt
 
 
 def getPalette(img_path):
+    """
+    获取图片调色板信息
+    """
     img = Image.open(img_path)
     palette = img.getpalette()
     return palette
 
 
 def tensorToPImage(mask_np, palette):
+    """
+    输入：图片的nparray 和 调色板信息
+    输出：对应位图
+    """
     img = np.uint8(mask_np)
     img = Image.fromarray(img)
     img.putpalette(palette)
@@ -47,6 +54,7 @@ def resizeMask(image_path, size=(256, 256)):
     return mask
 
 
+# 测试代码
 def main():
     test_image_path1 = "F:\GithubRepository\图像分割数据集\VOCtrainval_06-Nov-2007\VOCdevkit\VOC2007\SegmentationClass\\000033.png"
     img1 = Image.open(test_image_path1)
@@ -62,7 +70,6 @@ def main():
     plt.subplot(3, 1, 3)
     plt.imshow(img3)
     plt.show()
-
 
 
 if __name__ == "__main__":
