@@ -41,8 +41,8 @@ def resizeImage(image_path, size=(256, 256)):
 def resizeMask(image_path, size=(256, 256)):
     """
     处理标签
-    输入图片地址
-    输出缩放后的灰度图片
+    输入位图片地址
+    输出缩放后的位图
     """
     img = Image.open(image_path)
     p = img.getpalette()
